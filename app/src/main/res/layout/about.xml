@@ -5,6 +5,18 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/darkblue1"
+        android:elevation="4dp"
+        android:theme="@style/DotsDarkTheme"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,8 +27,8 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:cardCornerRadius="6dp"
             app:cardUseCompatPadding="true"
             app:cardElevation="5dp">
@@ -30,7 +42,7 @@
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/tracking_app"
+                    android:src="@drawable/logo"
                     android:layout_gravity="center"/>
 
                 <TextView
@@ -39,7 +51,8 @@
                     android:text="AKMap Bus Tracker"
                     android:layout_gravity="center"
                     android:textSize="25sp"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/blue"
+                    android:layout_marginTop="40dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -48,11 +61,11 @@
                     android:layout_gravity="center"
                     android:textColor="@color/black"/>
 
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gainsboro"/>
+                    android:background="@color/gainsboro"
+                    android:layout_marginTop="20dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -60,7 +73,7 @@
                     android:text="Developed By :"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
-                    android:layout_marginTop="5dp"/>
+                    android:layout_marginTop="15dp" />
 
                 <TextView
                     android:layout_width="wrap_content"

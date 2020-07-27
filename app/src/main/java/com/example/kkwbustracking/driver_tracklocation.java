@@ -1,11 +1,18 @@
 package com.example.kkwbustracking;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -13,12 +20,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -52,9 +63,13 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
     FirebaseDatabase database;      // used for store URLs of uploaded files
     String licence_no,email,phone,name;
     DatabaseHelper databaseHelper;
+    Location location;
 
-    int route;
+    int route=0;
     boolean route_selected = false;
+
+    private final String CHANNEL_ID = "simple_notification";
+    private final int NOTIFICATION_ID = 01;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,7 +81,13 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
 
         databaseHelper = new DatabaseHelper(this);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("My Current Location");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white,getTheme()));
+        setSupportActionBar(toolbar);
 
+        getWindow().setStatusBarColor(getResources().getColor(R.color.darkblue2, this.getTheme()));
+       // getWindow().setNavigationBarColor(getResources().getColor(R.color.yellow,this.getTheme()));
 
 
 
@@ -74,8 +95,6 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
        // phone = getIntent().getStringExtra("phone");
        // email = getIntent().getStringExtra("email");
        // name = getIntent().getStringExtra("name");
-
-        getSupportActionBar().setTitle("My Current Location");
 
         route_dialog();
 
@@ -128,16 +147,11 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
         builder1.setCancelable(false);
 
         // add a radio button list
-        String[] routes = {"College Road (1)", "Gangapur Road (2)", "Highway (3)"};
+        String[] routes = {"Jail Road (1)", "Pune Road (2)", "Cidco (3)","College Road (4)","Gangapur Road (5)"};
 
-        int checkedItem;
+        int checkedItem = route-1;
 
-       // if(route != -1)
-       //     checkedItem = route;
-        //else
-            checkedItem = -1;
-
-        builder1.setSingleChoiceItems(routes, checkedItem+1, new DialogInterface.OnClickListener()
+        builder1.setSingleChoiceItems(routes, checkedItem, new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -148,6 +162,8 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
                     case 0: route = 1;  break;
                     case 1: route = 2;  break;
                     case 2: route = 3;  break;
+                    case 3: route = 4;  break;
+                    case 4: route = 5;  break;
                 }
             }
         });
@@ -203,8 +219,8 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(100);
-        mLocationRequest.setFastestInterval(100);
+        mLocationRequest.setInterval(10);
+        mLocationRequest.setFastestInterval(10);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
@@ -229,7 +245,7 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
             if (locationList.size() > 0)
             {
                 //The last location in the list is the newest
-                final Location location = locationList.get(locationList.size() - 1);
+                location = locationList.get(locationList.size() - 1);
                 Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
                 if (mCurrLocationMarker != null)
@@ -269,6 +285,9 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
                 markerOptions.position(latLng);
                 markerOptions.title("Current Position");
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                DisplayNotification();
+
                 mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 //move map camera
@@ -292,9 +311,11 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission Needed")
                         .setMessage("This app needs the Location permission, please accept to use location functionality")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                        {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(driver_tracklocation.this,
                                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -303,8 +324,6 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
                         })
                         .create()
                         .show();
-
-
             }
             else
             {
@@ -341,6 +360,39 @@ public class driver_tracklocation extends AppCompatActivity implements OnMapRead
 
             // other 'case' lines to check for other
             // permissions this app might request
+        }
+    }
+
+    public void DisplayNotification()
+    {
+        Toast.makeText(this, "Atharva", Toast.LENGTH_SHORT).show();
+
+        createNotificationChannel();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.location);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.phone));
+        builder.setContentTitle("Sharing Driver Location");
+        builder.setContentText(location.getLatitude()+" , "+location.getLongitude());
+        builder.setOngoing(true);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
+        notificationManagerCompat.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    //create notification channel if you target android 8.0 or higher version
+    private void createNotificationChannel()
+    {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
+        {
+            CharSequence name = "Simple Notification";
+            String description = "Include all the simple notification";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,name,importance);
+            notificationChannel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(notificationChannel);
         }
     }
 }

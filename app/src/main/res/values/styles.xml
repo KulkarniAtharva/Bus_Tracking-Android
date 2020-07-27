@@ -1,10 +1,16 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme"
+        parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/blue</item>
+
     </style>
 
+    // https://stackoverflow.com/questions/16036204/change-the-action-bar-settings-icon-color
+    <style name="DotsDarkTheme" parent="@style/Widget.AppCompat.ActionBar" >
+        <item name="android:tint">@color/white</item>
+    </style>
 </resources>

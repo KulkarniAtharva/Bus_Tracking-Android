@@ -7,5 +7,10 @@
     <color name="gainsboro">#DCDCDC</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="yellow">#F6CC04</color>
+    <color name="purple">#6200EE</color>
+    <color name="darkblue1">#283A6A</color>
+    <color name="darkblue2">#1D2D51</color>
+    <color name="blue2">#00AFF0</color>
 
 </resources>

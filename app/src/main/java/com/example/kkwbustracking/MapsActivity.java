@@ -2,12 +2,15 @@ package com.example.kkwbustracking;
 
 import android.*;
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.Address;
@@ -17,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -25,9 +29,13 @@ import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 import android.os.Looper;
 import android.text.Editable;
+import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -594,7 +602,6 @@ public class MapsActivity extends AppCompatActivity
         driver = findViewById(R.id.driver);
         student = findViewById(R.id.student);
 
-
         driver.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -614,5 +621,44 @@ public class MapsActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("AKMap Bus Tracker");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white,getTheme()));
+        setSupportActionBar(toolbar);
+
+        getWindow().setStatusBarColor(getResources().getColor(R.color.darkblue2, this.getTheme()));
+       // getWindow().setNavigationBarColor(getResources().getColor(R.color.yellow,this.getTheme()));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_withoutroute, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if(id == R.id.share)
+        {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String shareBody = "Here is the share content body";
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
+        }
+        else
+        {
+            Intent intent = new Intent(MapsActivity.this,about.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -4,6 +4,7 @@ Keep track of your school buses in real-time with a comprehensive transport mana
 
 Safety from the first stop to the very last
 
+No longer do your children have to wait in the dark, freezing temperatures, pouring rain or hot sun. With Here Comes the Bus parents will know when their child’s bus is arriving, reducing the time their children spend standing by the side of the road.
 
 ### Overview
 
@@ -30,3 +31,6 @@ Keep track of your school buses in real-time with a comprehensive transport mana
 
 Keep your dear ones at arm’s length with real-time tracking of their school buses. Instant pickup and drop-off notifications with updated driver information will ensure your peace of mind when your kids are on the road.
 
+<B>Safety for your children</B>
+
+Mornings can be a hectic time. Getting ready for work. Getting the kids prepped for school. So what if – at least when it came to making sure your kids make it to the bus on time – you could remove some of that stress?

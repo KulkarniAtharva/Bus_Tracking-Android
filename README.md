@@ -1,5 +1,7 @@
 # Bus Tracking App
 
+Keep track of your school buses in real-time with a comprehensive transport management solution
+
 Safety from the first stop to the very last
 
 
